@@ -1,4 +1,6 @@
 
+package jdsp;
+
 public class RangeAllocator {
   double[] array;
   int used;

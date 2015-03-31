@@ -1,4 +1,6 @@
 
+package jdsp;
+
 public class DirectConvolutionOperator
   implements UnaryOperator {
  
@@ -8,7 +10,7 @@ public class DirectConvolutionOperator
   private Range tmpBuf;
   private int index;
   
-  public ConvolutionOperator(Range impulseResponse, RangeAllocator allocator) {
+  public DirectConvolutionOperator(Range impulseResponse, RangeAllocator allocator) {
     this.impulseResponse = impulseResponse;
     this.allocator = allocator;
   }
@@ -33,5 +35,6 @@ public class DirectConvolutionOperator
     for(int i = 0; i < size; ++i, writeIndex++) {
       this.tmpBuf.set(writeIndex, input * impulseResponse.get(i));
     }
+    return input;
   }
 }

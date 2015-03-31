@@ -1,4 +1,6 @@
 
+package jdsp;
+
 public class ObjectAllocator<T> {
   private Object[] array;
   private Class<T> cls;

@@ -1,4 +1,6 @@
 
+package jdsp;
+
 public final class Range {
   private double[] array;
   private int start;
@@ -32,6 +34,8 @@ public final class Range {
     
     int arrayIndex = start + index * stride;
     double result = this.array[arrayIndex];
+    
+    return result;
   }
   
   public void set(int index, double value) {
