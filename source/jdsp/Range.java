@@ -190,11 +190,6 @@ public final class Range {
   
   //Allocator support
   
-  public static ObjectAllocator<Range> makeAllocator(int size) {
-    ObjectAllocator<Range> result = new ObjectAllocator<>(size, Range.class);
-    return result;
-  }
-  
   void remake(RangeAllocator allocator, double[] array, int start, int end, int stride) {
     int count = (end-start)/stride;
     end = start + stride * count;
