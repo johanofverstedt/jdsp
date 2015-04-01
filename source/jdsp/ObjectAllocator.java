@@ -5,8 +5,14 @@ public class ObjectAllocator<T> {
   private Object[] array;
   private Class<T> cls;
   private int used;
+  private int[] stack;
+  private int stackIndex;
   
   public ObjectAllocator(int size, Class<T> cls) {
+    this(size, size, cls);
+  }
+  
+  public ObjectAllocator(int size, int stackSize, Class<T> cls) {
     this.cls = cls;
     this.array = new Object[size];
     try {
@@ -18,8 +24,11 @@ public class ObjectAllocator<T> {
       throw new RuntimeException("Can't create ObjectAllocator");
     }
     this.used = 0;
+    
+    stack = new int[stackSize];
+    stackIndex = 0;
   }
-  
+    
   public T allocate() {
     T result = null;
     Object o = this.array[this.used];
@@ -32,11 +41,20 @@ public class ObjectAllocator<T> {
     return result;
   }
   
-  public int push() {
-    return this.used;
+  public void push() {
+    assert (stackIndex < stack.length);
+    
+    stack[stackIndex++] = this.used;
   }
   
-  public void pop(int handle) {
-    this.used = handle;
+  public void pop() {
+    assert (stackIndex > 0);
+    
+    this.used = stack[--stackIndex];
+  }
+  
+  public void reset() {
+    this.used = 0;
+    this.stackIndex = 0;
   }
 }

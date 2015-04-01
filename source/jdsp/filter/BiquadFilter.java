@@ -1,6 +1,8 @@
 
 package jdsp.filter;
 
+import jdsp.*;
+
 public class BiquadFilter {
   private double b0;
   private double b1;
@@ -22,9 +24,9 @@ public class BiquadFilter {
     double b2 = this.b2;
     double a1 = this.a1;
     double a2 = this.a2;
-  }
-  
-  public void applyMutable(BiquadFilterState2, Range range) {
+    
+    double w1 = state.getW1();
+    double w2 = state.getW2();
     
   }
 }

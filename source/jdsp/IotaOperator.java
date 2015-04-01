@@ -13,12 +13,12 @@ public final class IotaOperator
   public IotaOperator(int start, int stride) {
     this.start = start;
     this.stride = stride;
+    this.current = start;
   }
-  
-  @Override
-  public void begin(int size) { current = start; }
-  @Override
-  public void end(int size) {}
+
+  public void reset() {
+    this.current = start;
+  }
   
   @Override
   public double apply(double input) {

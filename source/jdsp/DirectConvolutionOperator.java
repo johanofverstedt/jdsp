@@ -14,20 +14,7 @@ public class DirectConvolutionOperator
     this.impulseResponse = impulseResponse;
     this.allocator = allocator;
   }
-  
-  @Override
-  public void begin(int size) {
-    this.allocatorPushHandle = this.allocator.push();
-    this.tmpBuf = this.allocator.makeRange(this.impulseResponse.size() + size - 1);
-    this.index = 0;
-  }
-  @Override
-  public void end(int size) {
-    this.allocator.pop(allocatorPushHandle);
-    allocatorPushHandle = 0;
-    tmpBuf = null;
-  }
-  
+    
   @Override
   public double apply(double input) {
     int size = impulseResponse.size();

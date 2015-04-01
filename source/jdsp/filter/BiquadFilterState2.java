@@ -1,4 +1,6 @@
 
+package jdsp.filter;
+
 public final class BiquadFilterState2 {
   private double w1;
   private double w2;
