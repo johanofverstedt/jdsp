@@ -50,7 +50,7 @@ public final class Range {
     this.array[arrayIndex] = value;
   }
     
-  public void fill(double value) {
+  public Range fill(double value) {
     int start = this.start;
     int end = this.end;
     int stride = this.stride;
@@ -58,10 +58,12 @@ public final class Range {
     for(int i = start; i != end; i += stride) {
       array[i] = value;
     }
+    
+    return this;
   }
   
-  public void zero() {
-    fill(0.0);
+  public Range zero() {
+    return fill(0.0);
   }
   
   @Override
@@ -94,7 +96,7 @@ public final class Range {
     if(count > size)
       count = size;
     
-    result = shallowCopy(start, end - (stride * (size - count)), stride);
+    result = shallowCopy(this.start, this.end - (this.stride * (size - count)), this.stride);
     return result;
   }
   
@@ -104,21 +106,13 @@ public final class Range {
     if(count > size)
       count = size;
     
-    result = shallowCopy(start + stride * count, end, stride);
+    result = shallowCopy(this.start + this.stride * count, this.end, this.stride);
     return result;    
   }
   
   public Range copy() {
-    Range result = null;
-    int size = size();
-    if(allocator != null) {
-      result = allocator.makeRange(size);
-    } else {
-      result = new Range(new double[size],
-                       0,
-                       size,
-                       1);
-    }
+    Range result = beginDeepCopy();
+
     double[] outArray = result.array;
     int outIndex = result.start;
     
@@ -130,43 +124,18 @@ public final class Range {
   }
   
   public Range reverse() {
-    if(allocator != null) {
-      return allocator.makeRange(this.end - this.stride, 
-                                 this.start - this.stride, 
-                                 -this.stride);
-    } else {
-      return new Range(this.array,
-                       end - stride,
-                       start - stride,
-                       -stride);
-    }
+    return shallowCopy(this.end - this.stride, this.start - this.stride, -this.stride);
   }
   
   public Range reverseCopy() {
-    Range result = null;
-    if(allocator != null) {
-      result = allocator.makeRange(size());
-    } else {
-      result = new Range(new double[size()], 0, size(), 1);
-    }
+    Range result = beginDeepCopy();
+
     int outIndex = size()-1;
     for(int i = start; i != end; i+=stride) {
       result.set(outIndex--, this.array[i]);
     }
     
     return result;
-  }
-  
-  public Range reverseMutable() {
-    int newEnd = start;
-    int newStart = end;
-    int newStride = -stride;
-    
-    start = newStart + newStride;
-    end = newEnd + newStride;
-    stride = newStride;
-    
-    return this;
   }
   
   public Range apply(UnaryOperator op, Range out) {
@@ -197,8 +166,8 @@ public final class Range {
     
     return out;
   }
-  
-  public void applyMutable(UnaryOperator op) {
+    
+  public Range apply(UnaryOperator op) {
     int start = this.start;
     int end = this.end;
     int stride = this.stride;
@@ -209,7 +178,15 @@ public final class Range {
       array[i] = op.apply(array[i]);
     }  
 
+    return this;
   }
+  
+  public Range applyCopy(UnaryOperator op) {
+    Range result = beginDeepCopy();
+    
+    return apply(op, result);
+  }
+
   
   //Allocator support
   
@@ -217,27 +194,6 @@ public final class Range {
     ObjectAllocator<Range> result = new ObjectAllocator<>(size, Range.class);
     return result;
   }
-  /*
-  public static Range make(ObjectAllocator<Range> allocator,
-                           double[] array,
-                           int start,
-                           int end) {
-    
-    return make(allocator, array, start, end, 1);
-  }
-  public static Range make(ObjectAllocator<Range> allocator,
-                           double[] array,
-                           int start,
-                           int end,
-                           int stride) {
-    
-    Range result = allocator.allocate();
-    result.array = array;
-    result.start = start;
-    result.stride = stride;
-    
-    return result;
-  }*/
   
   void remake(RangeAllocator allocator, double[] array, int start, int end, int stride) {
     int count = (end-start)/stride;

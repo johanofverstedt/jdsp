@@ -2,6 +2,7 @@
 package jdsp;
 
 public class ComplexRange {
+  private RangeAllocator allocator;
   private double[] array;
   private int start;
   private int end;
@@ -17,4 +18,6 @@ public class ComplexRange {
     this.end = end;
     this.stride = stride;
   }
+  
+  
 }
